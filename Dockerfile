@@ -4,6 +4,10 @@ MAINTAINER Bartosz Kupidura <bartosz.kupidura@gmail.com>
 ENV PARANOIA=1 \
     ANOMALY_INBOUND=5 \
     ANOMALY_OUTBOUND=4 \
+    BLOCKING_PARANOIA=1 \
+    NGINX_KEEPALIVE_TIMEOUT=60s \
+    USER=nginx \
+    WORKER_CONNECTIONS=1024 \
     MODSEC_DEFAULT_PHASE1_ACTION="phase:1,pass,log,tag:'\${MODSEC_TAG}'" \
     MODSEC_DEFAULT_PHASE2_ACTION="phase:2,pass,log,tag:'\${MODSEC_TAG}'" \
     MODSEC_RULE_ENGINE=on \
@@ -17,10 +21,7 @@ ENV PARANOIA=1 \
 
 RUN apk add --update inotify-tools bash
 
-RUN rm -fr /etc/nginx/templates/conf.d /etc/nginx/templates/includes /etc/nginx/templates/nginx.conf.template
-
-COPY nginx/conf/nginx.conf /etc/nginx/nginx.conf
-COPY nginx/conf.d/* /etc/nginx/conf.d/
+COPY nginx/templates/ /etc/nginx/templates/
 
 COPY nginx/entrypoint.sh /entrypoint.sh
 
