@@ -16,7 +16,8 @@ ENV PARANOIA=1 \
     MODSEC_PCRE_MATCH_LIMIT_RECURSION=100000
 
 RUN apk add --update inotify-tools bash
-RUN rm -f /etc/nginx/conf.d/modsecurity.conf
+
+RUN rm -fr /etc/nginx/templates/conf.d /etc/nginx/templates/includes /etc/nginx/templates/nginx.conf.template
 
 COPY nginx/conf/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/conf.d/* /etc/nginx/conf.d/

@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -e
+
+exec 3>&1
 
 WATCH_DIRS="/ssl/ /nginx/"
 
@@ -6,11 +8,11 @@ copy_data() {
     cp -r /nginx/ /etc/
 }
 
-envsubst < /etc/modsecurity.d/modsecurity-override.conf | sponge /etc/modsecurity.d/modsecurity-override.conf
+/docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.d/90-copy-modsecurity-config.sh
+/docker-entrypoint.d/95-activate-rules.sh
 
-. /opt/modsecurity/activate-rules.sh
-
-mkdir ${WATCH_DIRS} 2> /dev/null
+mkdir ${WATCH_DIRS} 2> /dev/null || true
 
 {
     copy_data
