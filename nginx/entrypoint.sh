@@ -1,10 +1,9 @@
 #!/bin/bash
 
-WATCH_DIRS="/ssl/ /nginx/ /rules/"
+WATCH_DIRS="/ssl/ /nginx/"
 
 copy_data() {
     cp -r /nginx/ /etc/
-    cp /rules/* /opt/owasp-crs/rules/
 }
 
 envsubst < /etc/modsecurity.d/modsecurity-override.conf | sponge /etc/modsecurity.d/modsecurity-override.conf
