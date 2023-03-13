@@ -1,4 +1,4 @@
-FROM owasp/modsecurity-crs:3.3.2-nginx-alpine
+FROM owasp/modsecurity-crs:nginx-alpine
 MAINTAINER Bartosz Kupidura <bartosz.kupidura@gmail.com>
 
 ENV PARANOIA=1 \

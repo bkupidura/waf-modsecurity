@@ -8,6 +8,7 @@ copy_data() {
     cp -r /nginx/ /etc/
 }
 
+/docker-entrypoint.d/10-generate-certificate.sh
 /docker-entrypoint.d/20-envsubst-on-templates.sh
 /docker-entrypoint.d/90-copy-modsecurity-config.sh
 /docker-entrypoint.d/95-activate-rules.sh
