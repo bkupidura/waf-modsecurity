@@ -19,6 +19,8 @@ ENV PARANOIA=1 \
     MODSEC_PCRE_MATCH_LIMIT=100000 \
     MODSEC_PCRE_MATCH_LIMIT_RECURSION=100000
 
+USER root
+
 RUN apk add --update inotify-tools bash
 
 COPY nginx/templates/ /etc/nginx/templates/
@@ -26,5 +28,7 @@ COPY nginx/templates/ /etc/nginx/templates/
 COPY nginx/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
+
+USER nginx
 
 ENTRYPOINT ["/entrypoint.sh"]
