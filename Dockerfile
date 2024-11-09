@@ -29,6 +29,8 @@ COPY nginx/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
+RUN touch /var/run/nginx.pid
+
 RUN chown -R nginx /var/run/nginx.pid /etc/nginx
 
 USER nginx
