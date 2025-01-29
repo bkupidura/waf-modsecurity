@@ -22,6 +22,7 @@ ENV PARANOIA=1 \
 USER root
 
 RUN apk add --update inotify-tools bash
+RUN wget 'https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-Country.mmdb' -O '/etc/modsecurity.d/geolite2-country.mmdb'
 
 COPY nginx/templates/ /etc/nginx/templates/
 
