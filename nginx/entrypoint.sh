@@ -8,12 +8,13 @@ copy_data() {
     cp -r /nginx/ /etc/
 }
 
+/docker-entrypoint.d/0-move-writables.sh
 /docker-entrypoint.d/10-generate-certificate.sh
 /docker-entrypoint.d/20-envsubst-on-templates.sh
 /docker-entrypoint.d/90-copy-modsecurity-config.sh
 /docker-entrypoint.d/95-configure-rules.sh
 
-mkdir ${WATCH_DIRS} 2> /dev/null || true
+mkdir -p ${WATCH_DIRS} 2>/dev/null || true
 
 {
     copy_data

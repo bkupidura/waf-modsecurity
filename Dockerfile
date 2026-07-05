@@ -1,5 +1,5 @@
 FROM owasp/modsecurity-crs:nginx-alpine
-MAINTAINER Bartosz Kupidura <bartosz.kupidura@gmail.com>
+MAINTAINER Bartosz Kupidura <bartosz@spof.pl>
 
 ENV PARANOIA=1 \
     ANOMALY_INBOUND=5 \
@@ -8,8 +8,8 @@ ENV PARANOIA=1 \
     NGINX_KEEPALIVE_TIMEOUT=60s \
     USER=nginx \
     WORKER_CONNECTIONS=1024 \
-    MODSEC_DEFAULT_PHASE1_ACTION="phase:1,pass,log,tag:'\${MODSEC_TAG}'" \
-    MODSEC_DEFAULT_PHASE2_ACTION="phase:2,pass,log,tag:'\${MODSEC_TAG}'" \
+    MODSEC_DEFAULT_PHASE1_ACTION="phase:1,pass,log,tag:'${MODSEC_TAG}'" \
+    MODSEC_DEFAULT_PHASE2_ACTION="phase:2,pass,log,tag:'${MODSEC_TAG}'" \
     MODSEC_RULE_ENGINE=on \
     MODSEC_REQ_BODY_ACCESS=on \
     MODSEC_REQ_BODY_LIMIT=13107200 \
@@ -22,17 +22,25 @@ ENV PARANOIA=1 \
 USER root
 
 RUN apk add --update inotify-tools bash
-RUN wget 'https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-Country.mmdb' -O '/etc/modsecurity.d/geolite2-country.mmdb'
+
+RUN wget 'https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-Country.mmdb' \
+        -O '/etc/modsecurity.d/geolite2-country.mmdb'
+
+RUN rm /etc/modsecurity.d/owasp-crs \
+    && cp -a /opt/owasp-crs/. /etc/modsecurity.d/owasp-crs/
 
 COPY nginx/templates/ /etc/nginx/templates/
-
+COPY nginx/docker-entrypoint.d/0-move-writables.sh /docker-entrypoint.d/0-move-writables.sh
 COPY nginx/entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh /docker-entrypoint.d/0-move-writables.sh
 
-RUN touch /var/run/nginx.pid
-
-RUN chown -R nginx /var/run/nginx.pid /etc/nginx
+RUN mkdir -p \
+        /usr/local/bootstrap/nginx \
+        /usr/local/bootstrap/modsecurity.d \
+    && cp -a /etc/nginx/. /usr/local/bootstrap/nginx/ \
+    && cp -a /etc/modsecurity.d/. /usr/local/bootstrap/modsecurity.d/ \
+    && chown -R nginx:nginx /usr/local/bootstrap
 
 USER nginx
 
