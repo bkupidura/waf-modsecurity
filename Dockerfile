@@ -21,8 +21,6 @@ ENV PARANOIA=1 \
 
 USER root
 
-RUN apk add --update inotify-tools bash
-
 RUN wget 'https://github.com/P3TERX/GeoLite.mmdb/releases/latest/download/GeoLite2-Country.mmdb' \
         -O '/etc/modsecurity.d/geolite2-country.mmdb'
 
@@ -31,9 +29,9 @@ RUN rm /etc/modsecurity.d/owasp-crs \
 
 COPY nginx/templates/ /etc/nginx/templates/
 COPY nginx/docker-entrypoint.d/0-move-writables.sh /docker-entrypoint.d/0-move-writables.sh
-COPY nginx/entrypoint.sh /entrypoint.sh
+COPY nginx/init.sh /init.sh
 
-RUN chmod +x /entrypoint.sh /docker-entrypoint.d/0-move-writables.sh
+RUN chmod +x /init.sh /docker-entrypoint.d/0-move-writables.sh
 
 RUN mkdir -p \
         /usr/local/bootstrap/nginx \
@@ -44,4 +42,4 @@ RUN mkdir -p \
 
 USER nginx
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
